@@ -1,12 +1,33 @@
 const express=require("express");
 const postRouter=express.Router();
+const multer=require("multer");
+require("dotenv").config();
 
 const PostController=require("../controllers/PostController")
 
-postRouter.post("/createPost",PostController.creatPost);
-postRouter.post("/deletePost",PostController.deletePost);
-postRouter.get("/getPost",PostController.getPost);
-postRouter.get("/getAllPost",PostController.getAllPost);
+
+const {v4:uuidv4}=require("uuid")
+const cloudinary=require("cloudinary").v2
+
+
+const myStorage=multer.diskStorage({
+  
+    destination:function(req,req,cb){
+        cb(null,"./uploads")
+    },  
+    filename:function(req,file,cb){
+        console.log(file)
+        const random=uuidv4();
+        cb(null,random+"-"+file.originalname);
+    }
+})
+
+const upload=multer({storage:myStorage});
+
+postRouter.post("/createPost",upload.single("postImg"),PostController.creatPost);
+postRouter.post("/deletePost/:postId",PostController.deletePost);
+postRouter.get("/getPost/:postId",PostController.getPost);
+postRouter.get("/getAllPosts",PostController.getAllPost);
 
 
 
