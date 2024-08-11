@@ -11,6 +11,10 @@ const postModel=new mongoose.Schema({
     postHits:{
         type:Number,
         default:0
+    },
+    publicUrl:{
+        type:String,
+        default:""
     }
 },{
     timestamps:true

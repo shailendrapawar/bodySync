@@ -15,6 +15,10 @@ const authSchema=new mongoose.Schema({
     },
     profileImg:{
         type:String,
+        default:null
+    },
+    publicUrl:{
+        type:String,
         default:""
     },
     totalHits:{

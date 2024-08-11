@@ -8,4 +8,6 @@ postRouter.post("/deletePost",PostController.deletePost);
 postRouter.get("/getPost",PostController.getPost);
 postRouter.get("/getAllPost",PostController.getAllPost);
 
+
+
 module.exports=postRouter;
