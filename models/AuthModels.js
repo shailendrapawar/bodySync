@@ -19,7 +19,7 @@ const authSchema=new mongoose.Schema({
     },
     publicUrl:{
         type:String,
-        default:""
+        default:null
     },
     totalHits:{
         type:Number,

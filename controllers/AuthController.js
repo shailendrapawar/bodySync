@@ -1,6 +1,6 @@
 const AuthModel = require("../models/AuthModels")
 const bcrypt = require("bcrypt");
-const fs = require("fs")
+const fs = require("fs");
 const cloudinary = require("cloudinary").v2
 
 cloudinary.config({
@@ -9,6 +9,29 @@ cloudinary.config({
     api_secret: process.env.API_SECRET
 })
 class AuthController {
+    
+
+    //============get  user info=================================
+    static getUser=async(req,res)=>{
+        const {userId}=req.params;
+
+        const user=await AuthModel.findById({_id:userId}).populate("posts");
+
+        if(user){
+            res.send({
+                msg:"user data found",
+                status:200,
+                userData:user
+            })
+        }else{
+            res.send({
+                msg:"user data not found",
+                status:400,
+                userData:null
+            })
+        }
+
+    }
 
     //============login functionlity==============================
     static login = async (req, res) => {
@@ -90,6 +113,7 @@ class AuthController {
         const filePath = req.file.path;
         const{userId}=req.body;
 
+        //===uploading in cloudinary  ================================
         const isUploaded = await cloudinary.uploader.upload(filePath);
         if (isUploaded) {
             const { secure_url, public_id } = isUploaded;
@@ -101,13 +125,15 @@ class AuthController {
                 }
             })
 
+
+
+            // =======updating in auth model===============================
             const isUpdated=await AuthModel.findByIdAndUpdate({_id:userId},{
                 $set:{
                     profileImg:secure_url,
                     publicUrl:public_id
                 }
             })
-
             if(isUpdated){
                 res.send({
                     msg: "profile image uploaded successfully",

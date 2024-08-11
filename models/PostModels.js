@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-const postModel=new mongoose.Schema({
+const postSchema=new mongoose.Schema({
     postImg:{
         type:String
     },
@@ -19,3 +19,7 @@ const postModel=new mongoose.Schema({
 },{
     timestamps:true
 })
+
+const postModel=mongoose.model("postModel",postSchema)
+
+module.exports=postModel

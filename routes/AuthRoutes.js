@@ -29,6 +29,7 @@ authRouter.post("/register",AuthController.register);
 authRouter.post("/login",AuthController.login)
 authRouter.post("/changePassword",AuthController.changePassword)
 authRouter.post("/uploadProfileImg",upload.single("profileImg"),AuthController.uploadProfileImg);
+authRouter.get("/getUser/:userId",AuthController.getUser)
 
 
 
