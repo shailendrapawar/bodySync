@@ -69,17 +69,32 @@ class PostController {
                 }
             })
 
-            if(isPoped){
-                res.send({
-                    msg: "post deleted ",
-                    status: 200
-                })
-            }else{
-                res.send({
-                    msg: "post not deleted ",
-                    status: 400
-                })
-            }
+            const cloudDeleted=await cloudinary.uploader.destroy(isDeleted.publicUrl,(err,result)=>{
+                if(err){
+                    console.log(err)
+                }else{
+                    console.log(result)
+                }
+
+            })
+            console.log(isDeleted);
+
+            const result=await Promise.all([cloudDeleted,isPoped]);
+
+            console.log(result);
+
+
+            // if(isPoped){
+            //     res.send({
+            //         msg: "post deleted ",
+            //         status: 200
+            //     })
+            // }else{
+            //     res.send({
+            //         msg: "post not deleted ",
+            //         status: 400
+            //     })
+            // }
         } else{
             res.send({
                 msg: "post not deleted ",
