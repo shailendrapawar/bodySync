@@ -77,24 +77,20 @@ class PostController {
                 }
 
             })
-            console.log(isDeleted);
-
+        
             const result=await Promise.all([cloudDeleted,isPoped]);
 
-            console.log(result);
-
-
-            // if(isPoped){
-            //     res.send({
-            //         msg: "post deleted ",
-            //         status: 200
-            //     })
-            // }else{
-            //     res.send({
-            //         msg: "post not deleted ",
-            //         status: 400
-            //     })
-            // }
+            if(result){
+                res.send({
+                    msg: "post deleted ",
+                    status: 200
+                })
+            }else{
+                res.send({
+                    msg: "post not deleted ",
+                    status: 400
+                })
+            }
         } else{
             res.send({
                 msg: "post not deleted ",

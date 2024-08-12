@@ -15,7 +15,6 @@ const myStorage=multer.diskStorage({
         cb(null,"./uploads")
     },  
     filename:function(req,file,cb){
-        console.log(file)
         const random=uuidv4();
         cb(null,random+"-"+file.originalname);
     }
