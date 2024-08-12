@@ -20,9 +20,7 @@ class PostController {
         const filePath = req.file.path;
 
         const isUploaded = await cloudinary.uploader.upload(filePath)
-
         if (isUploaded) {
-
             fs.unlinkSync(filePath);
 
             let newPost = new PostModel({
@@ -57,49 +55,77 @@ class PostController {
 
     }
 
-    //========Deleting post====================================
+    //========Deleting post===================================
     static deletePost = async (req, res) => {
-        res.send(req.body.test)
+
+        const { userId } = req.body;
+        const { postId } = req.params;
+
+        const isDeleted = await PostModel.findByIdAndDelete({ _id: postId });
+        if (isDeleted) {
+            const isPoped = await AuthModel.findByIdAndUpdate({ _id: userId }, {
+                $pull: {
+                    posts: postId
+                }
+            })
+
+            if(isPoped){
+                res.send({
+                    msg: "post deleted ",
+                    status: 200
+                })
+            }else{
+                res.send({
+                    msg: "post not deleted ",
+                    status: 400
+                })
+            }
+        } else{
+            res.send({
+                msg: "post not deleted ",
+                status: 400
+            })
+        }
+
     }
 
     static getPost = async (req, res) => {
-        const {postId}=req.params
-        console.log(postId)
+        const { postId } = req.params
 
-        let isPost=await PostModel.findById({_id:postId});
-        if(isPost){
+        let isPost = await PostModel.findById({ _id: postId });
+        if (isPost) {
             res.send({
-                status:200,
-                msg:"post found",
-                data:isPost
+                status: 200,
+                msg: "post found",
+                data: isPost
             })
-        }else{
+        } else {
             res.send({
-                status:400,
-                msg:"post not found",
-                data:null
+                status: 400,
+                msg: "post not found",
+                data: null
             })
         }
     }
 
     static getAllPost = async (req, res) => {
-        let allPosts=await PostModel.find({})
-        if(allPosts){
+        let allPosts = await PostModel.find({})
+        if (allPosts) {
             res.send({
-                status:200,
-                msg:"post found",
-                data:allPosts
+                status: 200,
+                msg: "post found",
+                data: allPosts
             })
-        }else{
+        } else {
             res.send({
-                status:400,
-                msg:"post not found",
-                data:null
+                status: 400,
+                msg: "post not found",
+                data: null
             })
         }
     }
 
-    
+
 }
 
 module.exports = PostController
