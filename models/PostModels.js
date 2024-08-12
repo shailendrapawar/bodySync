@@ -4,14 +4,19 @@ const postSchema=new mongoose.Schema({
     postImg:{
         type:String
     },
+    postOwner:{
+        type:mongoose.Schema.ObjectId,
+        ref:"authModel"
+    },
     postCaption:{
         type:String,
         default:""
     },
-    postHits:{
-        type:Number,
-        default:0
-    },
+    postHits:[{
+        type:mongoose.Schema.ObjectId,
+        ref:"authModel",
+        default:[]
+    }],
     publicUrl:{
         type:String,
         default:""

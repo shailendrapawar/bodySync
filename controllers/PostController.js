@@ -26,7 +26,8 @@ class PostController {
             let newPost = new PostModel({
                 postCaption: postCaption,
                 postImg: isUploaded.secure_url,
-                publicUrl: isUploaded.public_id
+                publicUrl: isUploaded.public_id,
+                postOwner:userId
             })
 
             const isCreated = await newPost.save();
@@ -54,6 +55,8 @@ class PostController {
         }
 
     }
+
+
 
     //========Deleting post===================================
     static deletePost = async (req, res) => {
@@ -100,10 +103,17 @@ class PostController {
 
     }
 
+
+
+
+    //=========get single post===================================
     static getPost = async (req, res) => {
         const { postId } = req.params
 
-        let isPost = await PostModel.findById({ _id: postId });
+        let isPost = await PostModel.findById({ _id: postId }).populate({
+            path:"postOwner",
+            select:"name profileImg"
+        });
         if (isPost) {
             res.send({
                 status: 200,
@@ -119,6 +129,9 @@ class PostController {
         }
     }
 
+
+
+    //==============get allposts======================================
     static getAllPost = async (req, res) => {
         let allPosts = await PostModel.find({})
         if (allPosts) {

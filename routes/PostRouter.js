@@ -6,7 +6,6 @@ require("dotenv").config();
 const PostController=require("../controllers/PostController")
 
 const {v4:uuidv4}=require("uuid")
-const cloudinary=require("cloudinary").v2
 
 
 const myStorage=multer.diskStorage({
