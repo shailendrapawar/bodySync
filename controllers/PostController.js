@@ -104,8 +104,6 @@ class PostController {
     }
 
 
-
-
     //=========get single post===================================
     static getPost = async (req, res) => {
         const { postId } = req.params
@@ -133,7 +131,10 @@ class PostController {
 
     //==============get allposts======================================
     static getAllPost = async (req, res) => {
-        let allPosts = await PostModel.find({})
+        let allPosts = await PostModel.find({}).populate({
+            path:"postOwner",
+            select:"profileImg name"
+        })
         if (allPosts) {
             res.send({
                 status: 200,

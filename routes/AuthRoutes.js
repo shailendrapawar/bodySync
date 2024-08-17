@@ -13,7 +13,7 @@ const AuthController=require("../controllers/AuthController")
 
 const myStorage=multer.diskStorage({
   
-    destination:function(req,req,cb){
+    destination:function(req,file,cb){
         cb(null,"./uploads")
     },  
     filename:function(req,file,cb){
@@ -29,6 +29,7 @@ authRouter.post("/register",AuthController.register);
 authRouter.post("/login",AuthController.login)
 authRouter.post("/changePassword",AuthController.changePassword)
 authRouter.post("/uploadProfileImg",upload.single("profileImg"),AuthController.uploadProfileImg);
+authRouter.post("/deleteProfileImg",AuthController.deleteProfileImg)
 authRouter.get("/getUser/:userId",AuthController.getUser)
 
 

@@ -9,25 +9,26 @@ cloudinary.config({
     api_secret: process.env.API_SECRET
 })
 class AuthController {
-    
+
 
     //============get  user info=================================
-    static getUser=async(req,res)=>{
-        const {userId}=req.params;
+    static getUser = async (req, res) => {
+        const { userId } = req.params;
 
-        const user=await AuthModel.findById({_id:userId}).populate("posts");
+        const user = await AuthModel.findById({ _id: userId }).populate("posts");
 
-        if(user){
+
+        if (user) {
             res.send({
-                msg:"user data found",
-                status:200,
-                userData:user
+                msg: "user data found",
+                status: 200,
+                userData: user
             })
-        }else{
+        } else {
             res.send({
-                msg:"user data not found",
-                status:400,
-                userData:null
+                msg: "user data not found",
+                status: 400,
+                userData: null
             })
         }
 
@@ -107,49 +108,90 @@ class AuthController {
 
     }
 
-    //============upload image====================
+
+    //============upload profile image====================
 
     static uploadProfileImg = async (req, res) => {
         const filePath = req.file.path;
-        const{userId}=req.body;
+        const { userId } = req.body;
 
-        //===uploading in cloudinary  ================================
-        const isUploaded = await cloudinary.uploader.upload(filePath);
-        if (isUploaded) {
-            const { secure_url, public_id } = isUploaded;
-            await fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.log("error in deleting file from server");
-                } else {
-                    console.log("file deleted from server");
+        //first check if any image is there or not===============================
+
+        const user = await AuthModel.findById({ _id: userId })
+        const isNull = user.profileImg == null;
+        console.log(isNull);
+
+        if (!isNull) {
+            let cloudDelete = await cloudinary.uploader.destroy(user.publicUrl);
+        }
+
+
+        const cloudUpload = await cloudinary.uploader.upload(filePath)
+        console.log(cloudUpload);
+        if (cloudUpload) {
+            const isUpdated = await AuthModel.findByIdAndUpdate({ _id: userId }, {
+                $set: {
+                    profileImg: cloudUpload.secure_url,
+                    publicUrl: cloudUpload.public_id
                 }
             })
 
+            if (isUpdated) {
+                await fs.unlinkSync(filePath);
 
-
-            // =======updating in auth model===============================
-            const isUpdated=await AuthModel.findByIdAndUpdate({_id:userId},{
-                $set:{
-                    profileImg:secure_url,
-                    publicUrl:public_id
-                }
-            })
-            if(isUpdated){
                 res.send({
-                    msg: "profile image uploaded successfully",
+                    msg: "uploaded successfully",
                     status: 200
                 })
-            }else{
+            }
+        } else {
+            res.send({
+                msg: "error in uploading profile img",
+                status: 400
+            })
+        }
+    }
+
+    //fucnrtion for removing profile pic====================
+
+    static deleteProfileImg = async (req, res) => {
+        const { userId } = req.body;
+        console.log(userId)
+
+        const user = await AuthModel.findById({ _id: userId })
+
+        if (user) {
+            const isNull = user.profileImg == null;
+            console.log(isNull);
+
+            if (!isNull) {
+                let cloudDelete = await cloudinary.uploader.destroy(user.publicUrl);
+            }
+            const isUpdated = await AuthModel.findByIdAndUpdate({ _id: userId }, {
+                $set: {
+                    profileImg: null,
+                    publicUrl: null
+                }
+            })
+
+            if (isUpdated) {
                 res.send({
-                    msg:"profile pic not uploaded",
-                    status:400
+                    msg: "profile img deleted",
+                    status: 200
+                })
+            } else {
+                res.send({
+                    msg: "profile img deleted",
+                    status: 200
                 })
             }
+
         }else{
-            res.send({
-                msg:"profile pic not uploaded",
-                status:400
-            })
+             res.send({
+            msg: "user not found",
+            status: 400
+        })
+
         }
     }
 }

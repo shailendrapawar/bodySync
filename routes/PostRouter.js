@@ -10,7 +10,7 @@ const {v4:uuidv4}=require("uuid")
 
 const myStorage=multer.diskStorage({
   
-    destination:function(req,req,cb){
+    destination:function(req,file,cb){
         cb(null,"./uploads")
     },  
     filename:function(req,file,cb){
