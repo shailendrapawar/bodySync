@@ -47,7 +47,7 @@ class AuthControllers {
             })
         } else {
             let isValid = await bcrypt.compare(password, isUser.password);
-            console.log(isValid);
+            
             if (isValid) {
                 res.send({
                     msg: "authentic user",
@@ -120,7 +120,7 @@ class AuthControllers {
 
         const user = await AuthModel.findById({ _id: userId })
         const isNull = user.profileImg == null;
-        console.log(isNull);
+      
 
         if (!isNull) {
             let cloudDelete = await cloudinary.uploader.destroy(user.publicUrl);
@@ -128,7 +128,7 @@ class AuthControllers {
 
 
         const cloudUpload = await cloudinary.uploader.upload(filePath)
-        console.log(cloudUpload);
+       
         if (cloudUpload) {
             const isUpdated = await AuthModel.findByIdAndUpdate({ _id: userId }, {
                 $set: {
@@ -162,7 +162,7 @@ class AuthControllers {
 
         if (user) {
             const isNull = user.profileImg == null;
-            console.log(isNull);
+            
 
             if (!isNull) {
                 let cloudDelete = await cloudinary.uploader.destroy(user.publicUrl);
