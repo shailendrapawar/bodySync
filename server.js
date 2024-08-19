@@ -3,10 +3,6 @@ const app=express()
 const cors=require("cors");
 require("dotenv").config();
 
-
-
-
-
 //db connection---------------
 const dbConnect=require("./config/dbConfig")
 dbConnect();
@@ -84,6 +80,10 @@ io.on("connection",(socket)=>{
     })
 
 })
-myServer.listen(3000)
+
+const port=process.env.PORT||5000
+myServer.listen(port,()=>{
+    console.log(` body-sync server running at port${port}`)
+})
 
 // ========================================================
