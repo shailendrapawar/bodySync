@@ -10,7 +10,6 @@ const cloudinary=require("cloudinary").v2
 
 
 const AuthController=require("../controllers/AuthController")
-
 const myStorage=multer.diskStorage({
   
     destination:function(req,file,cb){

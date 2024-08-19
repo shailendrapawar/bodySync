@@ -8,7 +8,7 @@ cloudinary.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET
 })
-class AuthController {
+class AuthControllers {
 
 
     //============get  user info=================================
@@ -37,7 +37,8 @@ class AuthController {
     //============login functionlity==============================
     static login = async (req, res) => {
 
-        const { email, password } = req.body;
+        const{email,password}=req.body;
+        
         let isUser = await AuthModel.findOne({ email: email });
         if (!isUser) {
             res.send({
@@ -156,7 +157,6 @@ class AuthController {
 
     static deleteProfileImg = async (req, res) => {
         const { userId } = req.body;
-        console.log(userId)
 
         const user = await AuthModel.findById({ _id: userId })
 
@@ -196,4 +196,4 @@ class AuthController {
     }
 }
 
-module.exports = AuthController;
+module.exports=AuthControllers
