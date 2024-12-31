@@ -1,6 +1,7 @@
 const AuthModel = require("../models/AuthModels")
 const bcrypt = require("bcrypt");
 const fs = require("fs");
+const path = require("path");
 const cloudinary = require("cloudinary").v2
 
 cloudinary.config({
@@ -15,7 +16,7 @@ class AuthControllers {
     static getUser = async (req, res) => {
         const { userId } = req.params;
 
-        const user = await AuthModel.findById({ _id: userId }).populate("posts");
+        const user = await AuthModel.findById({ _id: userId }).select("-password").populate("posts");
 
 
         if (user) {
@@ -37,8 +38,8 @@ class AuthControllers {
     //============login functionlity==============================
     static login = async (req, res) => {
 
-        const{email,password}=req.body;
-        
+        const { email, password } = req.body;
+
         let isUser = await AuthModel.findOne({ email: email });
         if (!isUser) {
             res.send({
@@ -47,7 +48,7 @@ class AuthControllers {
             })
         } else {
             let isValid = await bcrypt.compare(password, isUser.password);
-            
+
             if (isValid) {
                 res.send({
                     msg: "authentic user",
@@ -120,7 +121,7 @@ class AuthControllers {
 
         const user = await AuthModel.findById({ _id: userId })
         const isNull = user.profileImg == null;
-      
+
 
         if (!isNull) {
             let cloudDelete = await cloudinary.uploader.destroy(user.publicUrl);
@@ -128,7 +129,7 @@ class AuthControllers {
 
 
         const cloudUpload = await cloudinary.uploader.upload(filePath)
-       
+
         if (cloudUpload) {
             const isUpdated = await AuthModel.findByIdAndUpdate({ _id: userId }, {
                 $set: {
@@ -162,7 +163,7 @@ class AuthControllers {
 
         if (user) {
             const isNull = user.profileImg == null;
-            
+
 
             if (!isNull) {
                 let cloudDelete = await cloudinary.uploader.destroy(user.publicUrl);
@@ -186,14 +187,73 @@ class AuthControllers {
                 })
             }
 
-        }else{
-             res.send({
-            msg: "user not found",
-            status: 400
-        })
+        } else {
+            res.send({
+                msg: "user not found",
+                status: 400
+            })
 
         }
     }
+
+
+    // getting public data of user=========================\
+
+    static getPublicUser = async (req, res) => {
+        try {
+            const { userId } = req.params;
+            // console.log(userId);
+
+            const userData = await AuthModel.findById({ _id: userId }).select("name email gender profileImg ").populate({
+                path: "posts",
+                select: "-publicUrl"
+            })
+
+            if(userData){
+                res.json({
+                    status: 200,
+                    data: userData
+                })
+            }
+
+        } catch (err) {
+            console.warn(err.msg);
+            res.send({
+                status: 400,
+                msg: "server internal error"
+            })
+        }
+    }
+
+
+    // updating details of user================================
+
+    static updateUserInfo = async (req, res) => {
+        try {
+            const { name, bio } = req.body;
+            const { userId } = req.params;
+
+            const isUpdated = await AuthModel.findByIdAndUpdate({ _id: userId },{
+                $set: {
+                    name: name,
+                    bio: bio
+                }
+            })
+
+            if (isUpdated) {
+                res.send({
+                    status: 200,
+                    msg: "updated"
+                })
+            }
+        }catch(err){
+            res.status(400).send({
+                status:400,
+                msg:"internal server error"
+            })
+        }
+
+    }
 }
 
-module.exports=AuthControllers
+module.exports = AuthControllers

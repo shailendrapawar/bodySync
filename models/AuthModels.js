@@ -7,6 +7,9 @@ const authSchema=new mongoose.Schema({
     email:{
         type:String
     },
+    bio:{
+
+    },
     password:{
         type:String
     },

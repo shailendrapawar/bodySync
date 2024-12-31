@@ -30,6 +30,10 @@ authRouter.post("/changePassword",AuthController.changePassword)
 authRouter.post("/uploadProfileImg",upload.single("profileImg"),AuthController.uploadProfileImg);
 authRouter.post("/deleteProfileImg",AuthController.deleteProfileImg)
 authRouter.get("/getUser/:userId",AuthController.getUser)
+authRouter.get("/getPublicUser/:userId",AuthController.getPublicUser)
+
+authRouter.post("/updateUserInfo/:userId",AuthController.updateUserInfo);
+
 
 
 
