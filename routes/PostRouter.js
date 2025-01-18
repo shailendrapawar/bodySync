@@ -27,5 +27,4 @@ postRouter.get("/getPost/:postId",PostController.getPost);
 postRouter.get("/getAllPosts",PostController.getAllPost);
 
 
-
 module.exports=postRouter;

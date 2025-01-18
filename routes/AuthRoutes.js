@@ -2,12 +2,8 @@ const express=require("express");
 const authRouter=express.Router();
 const multer=require("multer");
 require("dotenv").config();
-
-
 const {v4:uuidv4}=require("uuid")
 const cloudinary=require("cloudinary").v2
-
-
 
 const AuthController=require("../controllers/AuthController")
 const myStorage=multer.diskStorage({
@@ -33,8 +29,5 @@ authRouter.get("/getUser/:userId",AuthController.getUser)
 authRouter.get("/getPublicUser/:userId",AuthController.getPublicUser)
 
 authRouter.post("/updateUserInfo/:userId",AuthController.updateUserInfo);
-
-
-
 
 module.exports=authRouter;

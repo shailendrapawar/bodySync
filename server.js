@@ -24,33 +24,18 @@ const io=new Server(myServer,{
     }
 });
 
-
-
 app.use(cors({
     origin: "*", // Replace with your frontend URL
    
 }))
-
-
-
-
-
 app.get("/",(req,res)=>{
     res.send("working");
 })
-
 app.use(express.json())
 app.use(authRouter)
 app.use(postRouter)
-
-
-
-
 io.on("connection",(socket)=>{
-    
     socket.on("handleLike",async (data)=>{
-       
-        
         if(data.value==false){
           let isPushed =await  PostModel.findByIdAndUpdate({_id:data.postId},{
                 $push:{
@@ -74,13 +59,10 @@ io.on("connection",(socket)=>{
            
         }
     })
-
     socket.on('disconnect',()=>{
         console.log("user disconnected");
     })
-
 })
-
 const port=process.env.PORT||5000
 myServer.listen(port,()=>{
     console.log(` body-sync server running at port${port}`)
